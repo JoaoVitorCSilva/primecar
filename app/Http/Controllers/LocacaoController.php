@@ -32,7 +32,7 @@ class LocacaoController extends Controller
                 ->addColumn('nome', function ($row) {
                     return $row->cliente->nome ?? 'N/A'; // Ajuste o campo conforme o nome no modelo
                 })
-                ->addColumm('cor', function ($row) {
+                ->addColumn('cor', function ($row) {
                     return $row->veiculo->cor ?? 'N/A'; // Ajuste o campo conforme o nome no modelo
                 })
                 ->addColumn('placa', function ($row) {
@@ -51,7 +51,7 @@ class LocacaoController extends Controller
                     return $actionBtns;
                 })
                 ->rawColumns(['action'])
-                ->make();
+                ->make(true);
         }
 
         return view('locacoes.index');
@@ -83,16 +83,17 @@ class LocacaoController extends Controller
                 }
             }
 
-            $saldo_veiculos[] = [
-                'id' => $veiculo->id,
-                'modelo' => $veiculo->modelo,
-                'saldo' => $saldo,
-                'cor' => $veiculo->cor,
-                'placa' => $veiculo->placa,
-            ];
+            // Apenas adiciona veículos com saldo maior que zero
+            if ($saldo > 0) {
+                $saldo_veiculos[] = [
+                    'id' => $veiculo->id,
+                    'modelo' => $veiculo->modelo,
+                    'saldo' => $saldo,
+                    'cor' => $veiculo->cor,
+                    'placa' => $veiculo->placa,
+                ];
+            }
         }
-
-        // dd($saldo_veiculos);
 
         $output = array(
             'clientes' => $clientes,

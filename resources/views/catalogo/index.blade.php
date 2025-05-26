@@ -28,6 +28,7 @@
                         <th style="width: 10%">Ano</th>
                         <th style="width: 10%">Cor</th>
                         <th style="width: 10%">Combustível</th>
+                        <th style="width: 30%">Status</th>
                         <th style="width: 50%">Obs.</th>
                     </tr>
                 </thead>
@@ -81,6 +82,10 @@
                     {
                         data: 'tipo_combustivel',
                         name: 'tipo_combustivel'
+                    },
+                    {
+                        data: 'saldo',
+                        name: 'saldo'
                     },
                     {
                         data: 'observacoes',

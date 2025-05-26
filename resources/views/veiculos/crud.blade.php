@@ -102,6 +102,17 @@
                         <br>
                     </div>
                     <div class="col-sm-2">
+                        <label for="saldo">Saldo</label>
+                        <input type="text" class="form-control" id="saldo" name="saldo" placeholder=""
+                            value="{{ $edit->saldo ?? old('saldo') }}">
+                        @if ($errors->has('saldo'))
+                            <span style="color: red;">
+                                {{ $errors->first('saldo') }}
+                            </span>
+                        @endif
+                        <br>
+                    </div>
+                    <div class="col-sm-2">
                         <label for="combustivel">Combustível</label>
                         <select class="form-control" id="combustivel" name="combustivel">
                             <option value="">Selecione</option>
