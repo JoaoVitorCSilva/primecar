@@ -196,7 +196,7 @@ var spOptions = {
         field.mask(SPMaskBehavior.apply({}, arguments), options);
     }
 };
-$('#numero').mask(SPMaskBehavior, spOptions);
+$('#celular').mask(SPMaskBehavior, spOptions);
 
             // $('#cep').on('blur', function() {
                 
