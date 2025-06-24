@@ -22,12 +22,13 @@
             <table class="table table-bordered table-striped dataTable dtr-inline" id="veiculo-table" style="font-size: 15px;">
                 <thead>
                     <tr>
-                        <th style="width: 5%">Id</th>
+                        {{-- <th style="width: 5%">Id</th> --}}
                         <th style="width: 15%">Modelo</th>
                         <th style="width: 10%">Marca</th>
                         <th style="width: 10%">Ano</th>
                         <th style="width: 10%">Cor</th>
                         <th style="width: 10%">Combustível</th>
+                        <th style="width: 10%">Status</th>
                         <th style="width: 50%">Obs.</th>
                     </tr>
                 </thead>
@@ -56,11 +57,16 @@
                 },
                 processing: true,
                 serverSide: true,
+                paging: false,
+                searching: false,
+                ordering: false,
+                info: false,
                 ajax: "{{ route('veiculo.index') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
+                columns: [
+                    // {
+                    //     data: 'id',
+                    //     name: 'id'
+                    // },
                     {
                         data: 'modelo',
                         name: 'modelo'
@@ -81,6 +87,19 @@
                     {
                         data: 'tipo_combustivel',
                         name: 'tipo_combustivel'
+                    },
+                    {
+                        data: 'saldo',
+                        name: 'saldo',
+                        render: function(data, type, row) {
+                            if (data == 1) {
+                                return '<span class="badge badge-success">Disponível</span>';
+                            } else if (data == 0) {
+                                return '<span class="badge badge-danger">Alugado</span>';
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                    
                     {

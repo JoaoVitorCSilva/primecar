@@ -23,15 +23,15 @@
                 <thead>
                     <tr>
                         <th style="width: 5%">Id</th>
-                        <th style="width: 20%">Modelo</th>
-                        <th style="width: 20%">Marca</th>
-                        <th style="width: 20%">Placa</th>
+                        <th style="width: 10%">Modelo</th>
+                        <th style="width: 10%">Marca</th>
+                        <th style="width: 10%">Placa</th>
                         <th style="width: 20%">Renavam</th>
-                        <th style="width: 20%">chassi</th>
-                        <th style="width: 20%">Ano</th>
-                        <th style="width: 20%">Cor</th>
-                        <th style="width: 20%">Combustível</th>
-                        <th style="width: 20%">Ações</th>
+                        <th style="width: 15%">chassi</th>
+                        <th style="width: 5%">Ano</th>
+                        <th style="width: 5%">Cor</th>
+                        <th style="width: 5%">Combustível</th>
+                        <th style="width: 25%">Ações</th>
                     </tr>
                 </thead>
             </table>
