@@ -108,8 +108,6 @@ class LocacaoController extends Controller
      */
     public function store(Request $request)
     {
-
-        
         $user = Auth::user();
 
         $veiculo_id = $request->veiculo_id;
@@ -119,6 +117,13 @@ class LocacaoController extends Controller
         $data_prevista_devolucao = Carbon::createFromFormat('d/m/Y', $request->data_prevista_devolucao)->format('Y-m-d');
         $origin_user = $user->name;
         $last_user = $user->name;
+
+        // Diminui o saldo do veículo
+        $veiculo = Veiculo::find($veiculo_id);
+        if ($veiculo && $veiculo->saldo > 0) {
+            $veiculo->saldo -= 1;
+            $veiculo->save();
+        }
 
         $loc = new Locacao();
         $loc->veiculo_id = $veiculo_id;
@@ -200,6 +205,13 @@ class LocacaoController extends Controller
         $loc->data_devolucao = $data_devolucao;
         $loc->last_user = $user->name;
         $loc->update();
+
+        // Aumenta o saldo do veículo ao devolver
+        $veiculo = Veiculo::find($loc->veiculo_id);
+        if ($veiculo) {
+            $veiculo->saldo += 1;
+            $veiculo->save();
+        }
 
         return view('locacoes.index');
     }
