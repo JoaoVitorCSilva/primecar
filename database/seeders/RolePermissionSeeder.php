@@ -9,12 +9,12 @@ use Spatie\Permission\Models\Permission;
 class RolePermissionSeeder extends Seeder
 {
     /**
-     
-
-    Run the database seeds.*/
-      public function run(): void{// Reset cache de permissões
-          app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Reset cache de permissões
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Lista de permissões
         $permissoes = [

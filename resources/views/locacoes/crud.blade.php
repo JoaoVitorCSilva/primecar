@@ -56,7 +56,7 @@
                             @foreach ($veiculos as $veiculo)
                                 <option value="{{ $veiculo['id'] }}"
                                     {{ @$edit->veiculo_id == $veiculo['id'] ? 'selected' : '' }}>
-                                    {{ $veiculo['modelo'] . ' | cor: ' . $veiculo['cor'] . ' | placa: ' . $veiculo['placa'] }}
+                                    {{ $veiculo['modelo'] . ' | Cor: ' . $veiculo['cor'] . ' | Placa: ' . $veiculo['placa'] }}
                                 </option>
                             @endforeach
                         </select>
@@ -71,7 +71,7 @@
 
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="dias_locacao">Dias Locacao</label>
+                        <label for="dias_locacao">Dias Locacão</label>
                         <input type="text" class="form-control" id="dias_locacao" name="dias_locacao" placeholder="" {{ @$edit->id ? 'readonly' : '' }}
                             value="{{ $edit->dias_locacao ?? old('dias_locacao') }}">
                         @if ($errors->has('dias_locacao'))

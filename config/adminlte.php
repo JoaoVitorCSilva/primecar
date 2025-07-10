@@ -152,7 +152,8 @@ return [
     |
     */
 
-    'layout_topnav' => true,
+    
+    'layout_topnav' => null,
     'layout_boxed' => null,
     'layout_fixed_sidebar' => null,
     'layout_fixed_navbar' => null,
@@ -176,7 +177,7 @@ return [
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-dark',
+    'classes_auth_btn' => 'btn-flat btn-primary',
 
     /*
     |--------------------------------------------------------------------------
@@ -198,9 +199,8 @@ return [
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-auto navbar-expand-md navbar-light',
-    'classes_topnav_nav' => 'navbar-expand',
-    'classes_topnav_container' => 'container-fluid',
+    'classes_topnav' => 'navbar-auto navbar-light ',
+    'classes_topnav_container' => 'container',
 
     /*
     |--------------------------------------------------------------------------
@@ -302,13 +302,23 @@ return [
         // Navbar items:
         [
             'type' => 'navbar-search',
-            'text' => 'search',
+            'text' => 'Pesquisar',
             'topnav_right' => true,
         ],
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
+     
+        
+
+      //  [
+       
+       // ],
+      
+        
+
+
 
         // Sidebar items:
         // [
@@ -344,11 +354,10 @@ return [
             'text' => 'Cadastro',
             'url' => '#',
             'icon' => 'fas fa-id-card',
-            'can' => 'acessar cadastro',
             'submenu' => [
                 [
                     'text' => 'Clientes',
-                    'url' => '/clientes',
+                    'url' => '/cliente',
                     'icon' => 'fas fa-fw fa-users',
                     'can' => 'acessar cliente',
                 ],
@@ -420,6 +429,9 @@ return [
                 ],
             ],
         ],
+      
+
+
         'Select2' => [
             'active' => false,
             'files' => [

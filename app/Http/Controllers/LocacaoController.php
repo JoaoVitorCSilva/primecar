@@ -26,6 +26,13 @@ class LocacaoController extends Controller
                 ->get(); // Certifique-se de carregar as relações
 
             return DataTables::of($data)
+
+                ->addColumn('data_locacao', function ($row) {
+                 return \Carbon\Carbon::parse($row->data_locacao)->format('d/m/Y'); // Ajusta o campo no formato D/M/Y
+                    })
+                ->addColumn('data_prevista_devolucao', function ($row) {
+                 return \Carbon\Carbon::parse($row->data_prevista_devolucao)->format('d/m/Y'); // Ajusta o campo no formato D/M/Y
+                })
                 ->addColumn('modelo', function ($row) {
                     return $row->veiculo->modelo ?? 'N/A'; // Ajuste o campo conforme o nome no modelo
                 })
@@ -51,7 +58,7 @@ class LocacaoController extends Controller
                     return $actionBtns;
                 })
                 ->rawColumns(['action'])
-                ->make(true);
+                ->make();
         }
 
         return view('locacoes.index');
@@ -82,7 +89,6 @@ class LocacaoController extends Controller
                     $saldo -= $alugado->total;
                 }
             }
-
             // Apenas adiciona veículos com saldo maior que zero
             if ($saldo > 0) {
                 $saldo_veiculos[] = [
@@ -94,6 +100,8 @@ class LocacaoController extends Controller
                 ];
             }
         }
+
+       
 
         $output = array(
             'clientes' => $clientes,
@@ -108,6 +116,8 @@ class LocacaoController extends Controller
      */
     public function store(Request $request)
     {
+
+        
         $user = Auth::user();
 
         $veiculo_id = $request->veiculo_id;
@@ -118,12 +128,15 @@ class LocacaoController extends Controller
         $origin_user = $user->name;
         $last_user = $user->name;
 
-        // Diminui o saldo do veículo
+
+         // Diminui o saldo do veículo
         $veiculo = Veiculo::find($veiculo_id);
         if ($veiculo && $veiculo->saldo > 0) {
             $veiculo->saldo -= 1;
             $veiculo->save();
         }
+
+
 
         $loc = new Locacao();
         $loc->veiculo_id = $veiculo_id;
@@ -134,6 +147,8 @@ class LocacaoController extends Controller
         $loc->origin_user = $origin_user;
         $loc->last_user = $last_user;
         $loc->save();
+
+        
 
         return view('locacoes.index');
     }
@@ -165,7 +180,7 @@ class LocacaoController extends Controller
 
         $saldo_veiculos = array();
 
-        foreach ($veiculos as $veiculo) {
+          foreach ($veiculos as $veiculo) {
             $saldo = $veiculo->saldo;
 
             foreach ($alugados as $alugado) {
@@ -228,5 +243,11 @@ class LocacaoController extends Controller
         $loc->update();
 
         return view('locacoes.index');
+    }
+
+    public function apagarTodas()
+    {
+        \App\Models\Locacao::query()->update(['deletado' => 1]);
+        return response()->json(['success' => true]);
     }
 }

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;    
 use Yajra\DataTables\Facades\DataTables;
 
 class ClienteController extends Controller
@@ -22,9 +21,9 @@ class ClienteController extends Controller
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
                     $actionBtns = '
-                        <a href="' . route("clientes.edit", $row->id) . '" class="btn btn-outline-info btn-sm"><i class="fas fa-pen"></i></a>
+                        <a href="' . route("cliente.edit", $row->id) . '" class="btn btn-outline-info btn-sm"><i class="fas fa-pen"></i></a>
                         
-                        <form action="' . route("clientes.destroy", $row->id) . '" method="POST" style="display:inline" onsubmit="return confirm(\'Deseja realmente excluir este registro?\')">
+                        <form action="' . route("cliente.destroy", $row->id) . '" method="POST" style="display:inline" onsubmit="return confirm(\'Deseja realmente excluir este registro?\')">
                             ' . csrf_field() . '
                             ' . method_field("DELETE") . '
                             <button type="submit" class="btn btn-outline-danger btn-sm ml-2")><i class="fas fa-trash"></i></button>
@@ -56,7 +55,10 @@ class ClienteController extends Controller
         $user = Auth::user();
         
         $nome = $request->post('nome');
-        $cpf = $request->post('cpf');
+        $request->validate([
+            'cpf' => 'required|regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/',
+        ]);
+        $cpf = $request->post('cpf' );
         $cep = $request->post('cep');
         $logradouro = $request->post('logradouro');
         $numero = $request->post('numero');
@@ -64,6 +66,9 @@ class ClienteController extends Controller
         $bairro = $request->post('bairro');
         $cidade = $request->post('cidade');
         $uf = $request->post('uf');
+        $request->validate([
+            'celular' => 'required|regex:/^\(\d{2}\) \d{4,5}-\d{4}$/',
+        ]);
         $celular = $request->post('celular');
         $email = $request->post('email');
         
@@ -85,6 +90,7 @@ class ClienteController extends Controller
         $cliente->last_user = $user->name;
         $cliente->save();
 
+        //return redirect()->route('cliente.index')->with('success', 'Cliente cadastrado com sucesso!');
 
         return view('clientes.index');
     }
@@ -103,7 +109,6 @@ class ClienteController extends Controller
     public function edit($id)
     {
         $edit = Cliente::find($id);
-
         $output = array(
             'edit' => $edit,
         );
@@ -115,40 +120,41 @@ class ClienteController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
+    $nome = $request->post('nome');
+    $cpf = $request->post('cpf');
+    $cep = $request->post('cep');
+    $logradouro = $request->post('logradouro');
+    $numero = $request->post('numero');
+    $complemento = $request->post('complemento');
+    $bairro = $request->post('bairro');
+    $cidade = $request->post('cidade');
+    $uf = $request->post('uf');
+    $celular = $request->post('celular');
+    $email = $request->post('email');
 
-        $nome = $request->post('nome');
-        $cpf = $request->post('cpf');
-        $cep = $request->post('cep');
-        $logradouro = $request->post('logradouro');
-        $numero = $request->post('numero');
-        $complemento = $request->post('complemento');
-        $bairro = $request->post('bairro');
-        $cidade = $request->post('cidade');
-        $uf = $request->post('uf');
-        $celular = $request->post('celular');
-        $email = $request->post('email');
 
-        $cliente = Cliente::find($id);
+    $cliente = Cliente::find($id);
 
-        $cliente->nome = $nome;
-        $cliente->cpf = $cpf;
-        $cliente->cep = $cep;
-        $cliente->logradouro = $logradouro;
-        $cliente->numero = $numero;
-        $cliente->complemento = $complemento;
-        $cliente->bairro = $bairro;
-        $cliente->cidade = $cidade;
-        $cliente->uf = $uf;
-        $cliente->celular = $celular;
-        $cliente->email = $email;
-        $cliente->last_user = $user->name;
-        $cliente->update();
+    $cliente->nome = $request->post('nome');
+    $cliente->cpf = $request->post('cpf');
+    $cliente->cep = $request->post('cep');
+    $cliente->logradouro = $request->post('logradouro');
+    $cliente->numero = $request->post('numero');
+    $cliente->complemento = $request->post('complemento');
+    $cliente->bairro = $request->post('bairro');
+    $cliente->cidade = $request->post('cidade');
+    $cliente->uf = $request->post('uf');
+    $cliente->celular = $request->post('celular');
+    $cliente->email = $request->post('email');
+    $cliente->last_user = $user->name;
 
-        return view('clientes.index');
-        
-    }
+    $cliente->update(); // Salva corretamente
+
+    return view('clientes.index');
+    //return redirect()->route('cliente.index')->with('success', 'Cliente atualizado com sucesso!');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -157,74 +163,35 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::find($id);
         $cliente->delete();
+        //return redirect()->route('cliente.index')->with('success', 'Cliente excluído com sucesso!');
 
         return view('clientes.index');
     }
 
-    //APIS INTERNAS
-
-    public function consultaCep(Request $request)
-    {
-        // CONSUMO DE API USANDO O GET_FILE_CONTENTS
-        $cep = $request->input('cep');
-        $url = "https://viacep.com.br/ws/{$cep}/json/";
-
-        $response = file_get_contents($url);
-
-        return response()->json(json_decode($response));
 
 
-        // CONSUMO DE API USANDO O CURL
-        $cep = $request->input('cep');
-        $url = "https://viacep.com.br/ws/{$cep}/json/";
+
     
-        // Inicializa o cURL
-        $ch = curl_init();
-    
-        // Configurações do cURL
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout de 10 segundos
-    
-        // Executa a requisição
-        $response = curl_exec($ch);
-    
-        // Verifica se houve erro
-        if (curl_errno($ch)) {
-            return response()->json(['error' => 'Erro ao consultar o CEP.'], 500);
-        }
-    
-        // Fecha o cURL
-        curl_close($ch);
-
-        // Retorna a resposta decodificada
-        return response()->json(json_decode($response));
-
-        // CONSUMO DE API USANDO O GuzzleHttp
-
-        $cep = $request->input('cep');
-        $url = "https://viacep.com.br/ws/{$cep}/json/";
-    
-        // Inicializa o cliente Guzzle
-        $client = new Client();
-    
-        try {
-            // Faz a requisição GET
-            $response = $client->request('GET', $url);
-    
-            // Verifica o status da resposta
-            if ($response->getStatusCode() === 200) {
-                $data = json_decode($response->getBody(), true); // Decodifica o JSON
-                return response()->json($data);
-            }
-    
-            return response()->json(['error' => 'Erro ao consultar o CEP.'], $response->getStatusCode());
-        } catch (\Exception $e) {
-            // Trata erros de requisição
-            return response()->json(['error' => 'Erro ao consultar o CEP: ' . $e->getMessage()], 500);
-        }
-
-    }
-
+     // Consulta CEP
+     public function consultacep(Request $request)
+     {
+         $cep = $request->input('cep');
+         $url = "https://viacep.com.br/ws/{$cep}/json/";
+ 
+         $client = new Client();
+ 
+         try {
+             $response = $client->request('GET', $url);
+ 
+             if ($response->getStatusCode() === 200) {
+                 $data = json_decode($response->getBody(), true);
+                 return response()->json($data);
+             }
+ 
+             return response()->json(['error' => 'Erro ao consultar o CEP.'], $response->getStatusCode());
+         } catch (\Exception $e) {
+             return response()->json(['error' => 'Erro ao consultar o CEP: ' . $e->getMessage()], 500);
+         }
+     }
 
 }

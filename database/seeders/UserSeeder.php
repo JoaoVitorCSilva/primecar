@@ -9,13 +9,12 @@ use App\Models\User;
 class UserSeeder extends Seeder
 {
     /**
-     
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
 
-    Run the database seeds.*/
-      public function run(): void{
-
-
-
+        
         // Usuario Admin
         $admin = User::firstOrCreate(
             ['email' => 'admin@teste.com'],
@@ -40,7 +39,7 @@ class UserSeeder extends Seeder
         );
 
         $funcionario->assignRole('funcionario');
-
+        
 
         // Usuario Vendedor
           $vendedor = User::firstOrCreate(
@@ -53,7 +52,7 @@ class UserSeeder extends Seeder
         );
         // Atribui o papel de vendedor ao vendedor
         $vendedor->assignRole('vendedor');
-
+        
 
         // Usuario Cliente
         $cliente = User::firstOrCreate(

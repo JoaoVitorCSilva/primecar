@@ -3,7 +3,6 @@
 @section('title', 'Cadastro de Veículos')
 
 @section('content_header')
-    <h1>Veículos</h1>
 @stop
 
 @section('plugins.Datatables', true)
@@ -11,7 +10,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Lista de veiculos</h3>
+            <h3 class="card-title">Lista de Veículos</h3>
         </div>
 
         <div class="card-body">
@@ -24,14 +23,17 @@
                     <tr>
                         <th style="width: 5%">Id</th>
                         <th style="width: 10%">Modelo</th>
-                        <th style="width: 10%">Marca</th>
-                        <th style="width: 10%">Placa</th>
-                        <th style="width: 20%">Renavam</th>
-                        <th style="width: 15%">chassi</th>
-                        <th style="width: 5%">Ano</th>
+                        <th style="width: 5%">Marca</th>
+                        <th style="width: 5%">Origem</th>
+                        <th style="width: 5%">Placa</th>
+                        <th style="width: 5%">Renavam</th>
+                        <th style="width: 5%">Chassi</th>
+                        <th style="width: 5%">Ano de Fabricação</th>      
                         <th style="width: 5%">Cor</th>
                         <th style="width: 5%">Combustível</th>
-                        <th style="width: 25%">Ações</th>
+                        <th style="width: 5%">Observações</th>
+                        <th style="width: 5%">Ações</th>
+                    
                     </tr>
                 </thead>
             </table>
@@ -54,6 +56,12 @@
         $(document).ready(function() {
 
             $('#veiculo-table').DataTable({
+                 // Desabilita a pesquisa, paginação e informações
+                searching: false,
+                lengthChange: false,
+                paging: false,
+                info: false,
+
                 language: {
                     "url": "{{ asset('js/pt-br.json') }}"
                 },
@@ -73,6 +81,18 @@
                         name: 'marca'
                     },
                     {
+                         data: 'origem',
+                         name: 'origem',
+                        render: function (data) {
+                            if (data == 0) {
+                                 return '<span class="badge badge-success">Nacional</span>';
+                            } else if (data == 1) {
+                                return '<span class="badge 	badge bg-danger ">Importado</span>';
+                             }
+                                return data;
+                        }
+                 },
+                    {
                         data: 'placa',
                         name: 'placa'
                     },
@@ -86,7 +106,7 @@
                     },
                     {
                         data: 'ano_fabricacao',
-                        name: 'ano_fabricacao',
+                        name: 'ano_fabricacao'
                     },
                     {
                         data: 'cor',
@@ -96,6 +116,11 @@
                         data: 'tipo_combustivel',
                         name: 'tipo_combustivel'
                     },
+                    {
+                        data: 'observacoes',
+                        name: 'observacoes'
+                    },
+                 
 
                     {
                         data: 'action',

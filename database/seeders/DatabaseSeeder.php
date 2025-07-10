@@ -14,14 +14,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-
         $this->call([
-            RolePermissionSeeder::class,
+            RolePermissionSeeder::class, 
             UserSeeder::class,
-            // Add other seeders here as needed
         ]);
 
-        // You can add more seeders here if needed
-        
+        $this->call(VeiculoSeeder::class);
+
+        $this->call(ClienteSeeder::class);
+
+
+       
     }
 }

@@ -1,33 +1,27 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Veiculo;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Foto;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class VeiculoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
-           
             $data = Veiculo::latest()->get();
-            
+
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
                     $actionBtns = '
                         <a href="' . route("veiculo.edit", $row->id) . '" class="btn btn-outline-info btn-sm"><i class="fas fa-pen"></i></a>
-                        
                         <form action="' . route("veiculo.destroy", $row->id) . '" method="POST" style="display:inline" onsubmit="return confirm(\'Deseja realmente excluir este registro?\')">
                             ' . csrf_field() . '
                             ' . method_field("DELETE") . '
-                            <button type="submit" class="btn btn-outline-danger btn-sm ml-2")><i class="fas fa-trash"></i></button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm ml-2"><i class="fas fa-trash"></i></button>
                         </form>
                     ';
                     return $actionBtns;
@@ -39,125 +33,123 @@ class VeiculoController extends Controller
         return view('veiculos.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('veiculos.crud');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-
         $user = Auth::user();
         
         $modelo = $request->post('modelo');
         $marca = $request->post('marca');
+        $origem = $request->post('origem');
         $placa = $request->post('placa');
         $renavam = $request->post('renavam');
         $chassi = $request->post('chassi');
-        $ano = $request->post('ano');
+        $ano_fabricacao = $request->post('ano_fabricacao');
         $cor = $request->post('cor');
-        $saldo = $request->post('saldo');
-        $combustivel = $request->post('combustivel');
-        $observacao = $request->post('observacao');
-              
+        $tipo_combustivel = $request->post('tipo_combustivel');
+        $observacoes = $request->post('observacoes');
 
-        $veiculo = new veiculo();
+        $veiculo = new Veiculo();
 
         $veiculo->modelo = $modelo;
         $veiculo->marca = $marca;
+        $veiculo->origem = $origem;
         $veiculo->placa = $placa;
         $veiculo->renavam = $renavam;
         $veiculo->chassi = $chassi;
-        $veiculo->ano_fabricacao = $ano;
+        $veiculo->ano_fabricacao = $ano_fabricacao;
         $veiculo->cor = $cor;
-        $veiculo->tipo_combustivel = $combustivel;
-        $veiculo->saldo = $saldo;
-        $veiculo->observacoes = $observacao;
+        $veiculo->tipo_combustivel = $tipo_combustivel;
+        $veiculo->observacoes = $observacoes;
         $veiculo->origin_user = $user->name;
         $veiculo->last_user = $user->name;
         $veiculo->save();
 
+        // Salvar as fotos
+        if ($request->hasFile('fotos')) {
+            foreach ($request->file('fotos') as $foto) {
+                $path = $foto->store('fotos', 'public');
+                $novaFoto = new Foto();
+                $novaFoto->veiculo_id = $veiculo->id;
+                $novaFoto->caminho = $path;
+                $novaFoto->save();
+            }
+        }
 
         return view('veiculos.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $edit = veiculo::find($id);
+        $edit = Veiculo::find($id);
 
         $output = array(
             'edit' => $edit,
         );
-
         return view('veiculos.crud', $output);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $user = Auth::user();
 
         $modelo = $request->post('modelo');
         $marca = $request->post('marca');
+        $origem = $request->post('origem');
         $placa = $request->post('placa');
         $renavam = $request->post('renavam');
         $chassi = $request->post('chassi');
-        $ano = $request->post('ano');
+        $ano_fabricacao = $request->post('ano_fabricacao');
         $cor = $request->post('cor');
-        $saldo = $request->post('saldo');
-        $combustivel = $request->post('combustivel');
-        $observacao = $request->post('observacao');
+        $tipo_combustivel = $request->post('tipo_combustivel');
+        $observacoes = $request->post('observacoes');
+    
 
-        $veiculo = veiculo::find($id);
+        $veiculo = Veiculo::find($id);
 
         $veiculo->modelo = $modelo;
         $veiculo->marca = $marca;
+        $veiculo->origem = $origem;
         $veiculo->placa = $placa;
         $veiculo->renavam = $renavam;
         $veiculo->chassi = $chassi;
-        $veiculo->ano_fabricacao = $ano;
+        $veiculo->ano_fabricacao = $ano_fabricacao;
         $veiculo->cor = $cor;
-        $veiculo->tipo_combustivel = $combustivel;
-        $veiculo->saldo = $saldo;
-        $veiculo->observacoes = $observacao;
+        $veiculo->tipo_combustivel = $tipo_combustivel;
+        $veiculo->observacoes = $observacoes;
         $veiculo->origin_user = $user->name;
         $veiculo->last_user = $user->name;
         $veiculo->save();
 
+        // Salvar novas fotos (adiciona sem apagar as antigas)
+        if ($request->hasFile('fotos')) {
+            foreach ($request->file('fotos') as $foto) {
+                $path = $foto->store('fotos', 'public');
+                $novaFoto = new Foto();
+                $novaFoto->veiculo_id = $veiculo->id;
+                $novaFoto->caminho = $path;
+                $novaFoto->save();
+            }
+        }
+
         return view('veiculos.index');
-        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $veiculo = veiculo::find($id);
+        $veiculo = Veiculo::findOrFail($id);
         $veiculo->delete();
 
         return view('veiculos.index');
     }
 
-    
-
+    public function show($id)
+    {
+        $veiculo = Veiculo::with('fotos')->findOrFail($id);
+        return view('veiculos.show', compact('veiculo'));
+    }
 }
