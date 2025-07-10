@@ -43,7 +43,7 @@
                                 $fotoCapa = $veiculo->fotos->where('capa', true)->first() ?? $veiculo->fotos->first();
                             @endphp
                             @if($fotoCapa)
-                                <img src="{{ asset('storage/' . $fotoCapa->caminho) }}" class="card-img-top" alt="Foto do veículo">
+                                <img src="{{ asset('storage/' . $fotoCapa->caminho) }}" class="card-img-top" alt="Foto do veículo" style="width: 100%; height: 200px; object-fit: cover;">
                             @else
                                 <img src="{{ asset('img/sem-foto.png') }}" class="card-img-top" alt="Sem foto">
                             @endif
@@ -62,7 +62,7 @@
                                         <span class="badge badge-secondary">Indefinido</span>
                                     @endif
                                 </p>
-                                <a href="#" class="btn btn-primary btn-block">Ver detalhes</a>
+                                <a href="/carro" class="btn btn-primary btn-block">Ver detalhes</a>
                             </div>
                         </div>
                     </div>

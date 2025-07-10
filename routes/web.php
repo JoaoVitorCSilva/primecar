@@ -6,6 +6,7 @@
             use App\Http\Controllers\VeiculoController;
             use App\Http\Controllers\CatalogoController;
             use App\Http\Controllers\LocacaoController;
+            use App\Http\Controllers\CarroController;
             
             Route::get('/', function () {
                 return view('auth/login');
@@ -31,6 +32,8 @@
 
     Route::resource('locacao', LocacaoController::class);
         //->middleware('permission:acessar locacao');
+
+    Route::resource('carro', CarroController::class);
 
     Route::get('/veiculos/{id}', [\App\Http\Controllers\VeiculoController::class, 'show'])->name('veiculos.show');
 

@@ -19,6 +19,17 @@ class Veiculo extends Model
         return $this->hasMany(Foto::class);
     }
 
+    public function clientes()
+    {
+        return $this->hasManyThrough(
+            \App\Models\Cliente::class, // Model final
+            \App\Models\Locacao::class, // Model intermediário
+            'veiculo_id', // Foreign key em Locacao para Veiculo
+            'id',         // Foreign key em Cliente (normalmente 'id')
+            'id',         // Local key em Veiculo
+            'cliente_id'  // Foreign key em Locacao para Cliente
+        );
+    }
 
     public function getSaldoAttribute()
     {
