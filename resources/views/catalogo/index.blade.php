@@ -62,7 +62,59 @@
                                         <span class="badge badge-secondary">Indefinido</span>
                                     @endif
                                 </p>
-                                <a href="/carro" class="btn btn-primary btn-block">Ver detalhes</a>
+                                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#carroModal{{ $veiculo->id }}">Ver detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="carroModal{{ $veiculo->id }}" tabindex="-1" role="dialog" aria-labelledby="carroModalLabel{{ $veiculo->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="carroModalLabel{{ $veiculo->id }}">{{ $veiculo->modelo }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div id="carouselExampleIndicators{{ $veiculo->id }}" class="carousel slide" data-ride="carousel">
+                                                <div class="carousel-inner">
+                                                    @foreach($veiculo->fotos as $index => $foto)
+                                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                                            <img src="{{ asset('storage/' . $foto->caminho) }}" class="d-block w-100" alt="Foto do veículo" style="width: 100%; height: 300px; object-fit: cover;">
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <a class="carousel-control-prev" href="#carouselExampleIndicators{{ $veiculo->id }}" role="button" data-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                                <a class="carousel-control-next" href="#carouselExampleIndicators{{ $veiculo->id }}" role="button" data-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <h5>Detalhes do Veículo</h5>
+                                            <p>
+                                                <strong>Marca:</strong> {{ $veiculo->marca }}<br>
+                                                <strong>Ano de Fabricação:</strong> {{ $veiculo->ano_fabricacao }}<br>
+                                                <strong>Cor:</strong> {{ $veiculo->cor }}<br>
+                                                <strong>Combustível:</strong> {{ $veiculo->tipo_combustivel }}<br>
+                                                <strong>Origem:</strong> {{ $veiculo->origem == 0 ? 'Nacional' : 'Importado' }}<br>
+                                                <strong>Status:</strong> {{ $veiculo->saldo == 1 ? 'Disponível' : 'Indisponível' }}<br>
+                                                <strong>Observações:</strong> {{ $veiculo->observacoes }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
